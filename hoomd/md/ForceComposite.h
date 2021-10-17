@@ -173,10 +173,10 @@ class PYBIND11_EXPORT ForceComposite : public MolecularForceCompute
             positions.append(pybind11::make_tuple(h_body_pos.data[index].x,
                                                   h_body_pos.data[index].y,
                                                   h_body_pos.data[index].z));
-            orientations.append(pybind11::make_tuple(h_body_orientation.data[index].x,
-                                                     h_body_orientation.data[index].y,
-                                                     h_body_orientation.data[index].z,
-                                                     h_body_orientation.data[index].w));
+            orientations.append(pybind11::make_tuple((const Scalar&)h_body_orientation.data[index].x,
+                                                     (const Scalar&)h_body_orientation.data[index].y,
+                                                     (const Scalar&)h_body_orientation.data[index].z,
+                                                     (const Scalar&)h_body_orientation.data[index].w));
             types.append(m_pdata->getNameByType(h_body_types.data[index]));
             charges.append(m_body_charge[body_type_id][i]);
             diameters.append(m_body_diameter[body_type_id][i]);

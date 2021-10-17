@@ -87,15 +87,15 @@ class EvaluatorTersoff
             pybind11::dict v;
 
             pybind11::list mags;
-            mags.append(coeffs.x);
-            mags.append(coeffs.y);
+            mags.append((const Scalar&)coeffs.x);
+            mags.append((const Scalar&)coeffs.y);
             v["magnitudes"] = pybind11::tuple(mags);
 
             v["cutoff_thickness"] = cutoff_thickness;
 
             pybind11::list exp_factors;
-            exp_factors.append(exp_consts.x);
-            exp_factors.append(exp_consts.y);
+            exp_factors.append((const Scalar&)exp_consts.x);
+            exp_factors.append((const Scalar&)exp_consts.y);
             v["exp_factors"] = pybind11::tuple(exp_factors);
 
             v["lambda3"] = pow(lambda_cube, 1. / 3.);

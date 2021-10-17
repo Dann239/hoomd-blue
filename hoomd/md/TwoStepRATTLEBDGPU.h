@@ -156,12 +156,14 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::integrateStepOne(uin
         auto& gpu_map = this->m_exec_conf->getGPUIds();
         for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
             {
+            #ifdef __NVCC__
             cudaMemPrefetchAsync(this->m_gamma.get(),
                                  sizeof(Scalar) * this->m_gamma.getNumElements(),
                                  gpu_map[idev]);
             cudaMemPrefetchAsync(this->m_gamma_r.get(),
                                  sizeof(Scalar) * this->m_gamma_r.getNumElements(),
                                  gpu_map[idev]);
+            #endif
             }
         if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
@@ -247,9 +249,11 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::includeRATTLEForce(u
         auto& gpu_map = this->m_exec_conf->getGPUIds();
         for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
             {
+            #ifdef __NVCC__
             cudaMemPrefetchAsync(this->m_gamma.get(),
                                  sizeof(Scalar) * this->m_gamma.getNumElements(),
                                  gpu_map[idev]);
+            #endif
             }
         if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
