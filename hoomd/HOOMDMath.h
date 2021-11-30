@@ -669,6 +669,7 @@ HOSTDEVICE inline hoomd::Scalar3 operator-(const hoomd::Scalar3& a, const hoomd:
     {
     return hoomd::make_scalar3(a.x - b.x, a.y - b.y, a.z - b.z);
     }
+/*
 //! Vector subtraction
 HOSTDEVICE inline hoomd::Scalar3& operator-=(hoomd::Scalar3& a, const hoomd::Scalar3& b)
     {
@@ -677,7 +678,7 @@ HOSTDEVICE inline hoomd::Scalar3& operator-=(hoomd::Scalar3& a, const hoomd::Sca
     a.z -= b.z;
     return a;
     }
-
+*/
 //! Vector multiplication (component-wise)
 HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
     {
@@ -751,6 +752,7 @@ HOSTDEVICE inline int3 operator+(const int3& a, const int3& b)
     {
     return make_int3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
+/*
 //! Integer vector unary addition
 HOSTDEVICE inline int3 operator+=(int3& a, const int3& b)
     {
@@ -759,6 +761,7 @@ HOSTDEVICE inline int3 operator+=(int3& a, const int3& b)
     a.z += b.z;
     return a;
     }
+*/
 //! Integer vector subtraction
 HOSTDEVICE inline int3 operator-(const int3& a, const int3& b)
     {
