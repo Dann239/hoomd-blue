@@ -22,42 +22,6 @@ else()
     add_library(CUDA::cudart UNKNOWN IMPORTED)
 endif()
 
-if (HIP_PLATFORM STREQUAL "hip-clang" OR HIP_PLATFORM STREQUAL "hcc")
-    # find libraries that go with this compiler
-    find_library(HIP_hip_hcc_LIBRARY hip_hcc
-        PATHS
-        "${HIP_ROOT_DIR}"
-        ENV ROCM_PATH
-        ENV HIP_PATH
-        /opt/rocm
-        PATH_SUFFIXES lib
-        NO_DEFAULT_PATH)
-    mark_as_advanced(HIP_hip_hcc_LIBRARY)
-    find_library(HIP_hiprtc_LIBRARY hiprtc
-        PATHS
-        "${HIP_ROOT_DIR}"
-        ENV ROCM_PATH
-        ENV HIP_PATH
-        /opt/rocm
-        PATH_SUFFIXES lib
-        NO_DEFAULT_PATH)
-    mark_as_advanced(HIP_hiprtc_LIBRARY)
-
-    if(HIP_hip_hcc_LIBRARY AND NOT TARGET HIP::hiprt)
-      add_library(HIP::hiprt UNKNOWN IMPORTED)
-      set_target_properties(HIP::hiprt PROPERTIES
-        IMPORTED_LOCATION "${HIP_hip_hcc_LIBRARY}"
-        INTERFACE_LINK_LIBRARIES ${HIP_hiprtc_LIBRARY}
-      )
-    endif()
-    list(APPEND REQUIRED_HIP_LIB_VARS "HIP_hip_hcc_LIBRARY")
-    list(APPEND REQUIRED_HIP_LIB_VARS "HIP_hiprtc_LIBRARY")
-else()
-    # define empty target
-    add_library(HIP::hiprt UNKNOWN IMPORTED)
-endif()
-
-
 if (HIP_PLATFORM STREQUAL "nvcc")
     find_library(CUDA_cudadevrt_LIBRARY cudadevrt HINTS ${CUDA_LIB_PATH})
     mark_as_advanced(CUDA_cudadevrt_LIBRARY)
