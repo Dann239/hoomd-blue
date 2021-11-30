@@ -13,12 +13,15 @@
 #endif
 
 using namespace std;
-namespace py = pybind11;
 
 /*! \file TwoStepNVTMTK.h
     \brief Contains code for the TwoStepNVTMTK class
 */
 
+namespace hoomd
+    {
+namespace md
+    {
 /*! \param sysdef SystemDefinition this method will act on. Must not be NULL.
     \param group The group of particles this integration method is to work on
     \param thermo compute for thermodynamic quantities
@@ -75,7 +78,7 @@ void TwoStepNVTMTK::integrateStepOne(uint64_t timestep)
         m_prof->push("NVT step 1");
         }
 
-    // scope array handles for proper releasing before calling the thermo compute
+        // scope array handles for proper releasing before calling the thermo compute
         {
         ArrayHandle<Scalar4> h_vel(m_pdata->getVelocities(),
                                    access_location::host,
@@ -587,16 +590,18 @@ Scalar TwoStepNVTMTK::getThermostatEnergy(uint64_t timestep)
     return thermostat_energy;
     }
 
-void export_TwoStepNVTMTK(py::module& m)
+namespace detail
     {
-    py::class_<TwoStepNVTMTK, IntegrationMethodTwoStep, std::shared_ptr<TwoStepNVTMTK>>(
+void export_TwoStepNVTMTK(pybind11::module& m)
+    {
+    pybind11::class_<TwoStepNVTMTK, IntegrationMethodTwoStep, std::shared_ptr<TwoStepNVTMTK>>(
         m,
         "TwoStepNVTMTK")
-        .def(py::init<std::shared_ptr<SystemDefinition>,
-                      std::shared_ptr<ParticleGroup>,
-                      std::shared_ptr<ComputeThermo>,
-                      Scalar,
-                      std::shared_ptr<Variant>>())
+        .def(pybind11::init<std::shared_ptr<SystemDefinition>,
+                            std::shared_ptr<ParticleGroup>,
+                            std::shared_ptr<ComputeThermo>,
+                            Scalar,
+                            std::shared_ptr<Variant>>())
         .def("setT", &TwoStepNVTMTK::setT)
         .def("setTau", &TwoStepNVTMTK::setTau)
         .def_property("kT", &TwoStepNVTMTK::getT, &TwoStepNVTMTK::setT)
@@ -610,3 +615,7 @@ void export_TwoStepNVTMTK(py::module& m)
                       &TwoStepNVTMTK::setRotationalThermostatDOF)
         .def("getThermostatEnergy", &TwoStepNVTMTK::getThermostatEnergy);
     }
+
+    } // end namespace detail
+    } // end namespace md
+    } // end namespace hoomd

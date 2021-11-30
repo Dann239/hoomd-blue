@@ -10,8 +10,6 @@
 #include "NeighborList.h"
 #include "hoomd/BondedGroupData.h"
 
-namespace py = pybind11;
-
 #include <iostream>
 #include <stdexcept>
 
@@ -21,6 +19,10 @@ using namespace std;
     \brief Defines the NeighborList class
 */
 
+namespace hoomd
+    {
+namespace md
+    {
 /*! \param sysdef System the neighborlist is to compute neighbors for
     \param _r_cut Cutoff radius for all pairs under which particles are considered neighbors
     \param r_buff Buffer radius around \a r_cut in which neighbors will be included
@@ -127,7 +129,7 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     m_Nmax.swap(Nmax);
     TAG_ALLOCATION(m_Nmax);
 
-    // flood Nmax with 4s initially
+        // flood Nmax with 4s initially
         {
         ArrayHandle<unsigned int> h_Nmax(m_Nmax, access_location::host, access_mode::overwrite);
         for (unsigned int i = 0; i < m_pdata->getNTypes(); ++i)
@@ -1737,7 +1739,7 @@ void NeighborList::updateMemoryMapping()
         // stash this partition for the future, so we can unset hints again
         m_last_gpu_partition = gpu_partition;
 
-        // split preferred location of neighbor list across GPUs
+            // split preferred location of neighbor list across GPUs
             {
             ArrayHandle<unsigned int> h_head_list(m_head_list,
                                                   access_location::host,
@@ -1801,10 +1803,12 @@ void NeighborList::updateMemoryMapping()
     }
 #endif
 
-void export_NeighborList(py::module& m)
+namespace detail
     {
-    py::class_<NeighborList, Compute, std::shared_ptr<NeighborList>> nlist(m, "NeighborList");
-    nlist.def(py::init<std::shared_ptr<SystemDefinition>, Scalar>())
+void export_NeighborList(pybind11::module& m)
+    {
+    pybind11::class_<NeighborList, Compute, std::shared_ptr<NeighborList>> nlist(m, "NeighborList");
+    nlist.def(pybind11::init<std::shared_ptr<SystemDefinition>, Scalar>())
         .def_property("buffer", &NeighborList::getRBuff, &NeighborList::setRBuff)
         .def_property("rebuild_check_delay",
                       &NeighborList::getRebuildCheckDelay,
@@ -1828,8 +1832,12 @@ void export_NeighborList(py::module& m)
         .def("getNumUpdates", &NeighborList::getNumUpdates)
         .def("getNumExclusions", &NeighborList::getNumExclusions);
 
-    py::enum_<NeighborList::storageMode>(nlist, "storageMode")
+    pybind11::enum_<NeighborList::storageMode>(nlist, "storageMode")
         .value("half", NeighborList::storageMode::half)
         .value("full", NeighborList::storageMode::full)
         .export_values();
     }
+
+    } // end namespace detail
+    } // end namespace md
+    } // end namespace hoomd
